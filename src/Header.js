@@ -4,7 +4,7 @@ import { WalletContext } from './WalletProvider';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
-  const { walletConnected, walletAddress, connectWallet, disconnectWallet } = useContext(WalletContext);
+  const { walletConnected, walletAddress, isAdmin, connectWallet, disconnectWallet } = useContext(WalletContext);
 
   const truncateAddress = (address) => address ? `${address.substring(0, 6)}...${address.substring(address.length - 4)}` : '';
 
@@ -13,7 +13,10 @@ const Header = () => {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <img src="logo.png" alt="logo" style={{ width: '50px', marginRight: '10px' }} />
         <h1 style={{ color: 'white', fontSize: '1.5em', margin: 0 }}>PREMIERE DAPP</h1>
+        
+        {isAdmin && <Link to="/components/Admin" style={{ color: 'white', marginLeft: '20px' }}> Admin</Link>}
         {/* Ajout des liens pour la navigation */}
+
         <Link to="/" style={{ color: 'white', marginLeft: '20px', textDecoration: 'none' }}>Home</Link>
         <Link to="/components/Candidats" style={{ color: 'white', marginLeft: '20px', textDecoration: 'none' }}>Candidats</Link>
         <Link to="/components/Voter" style={{ color: 'white', marginLeft: '20px', textDecoration: 'none' }}>Voter</Link>
