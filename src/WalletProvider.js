@@ -1,12 +1,14 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import Web3 from 'web3';
-import {Admin, adminsList} from './components/Admin'; // Importez la liste des admins depuis Admin.js
+import { AppContext } from './AppContext'; // Importez le contexte global
 
 // Création du contexte pour le portefeuille
 export const WalletContext = createContext(null);
 
 // Composant fournisseur pour le WalletContext
 export const WalletProvider = ({ children }) => {
+  const { adminsList } = useContext(AppContext); // Utilisez le contexte global pour obtenir adminsList
+
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
 
@@ -25,9 +27,9 @@ export const WalletProvider = ({ children }) => {
           setWalletConnected(true);
           setWalletAddress(accounts[0]);
 
-        // Vérifiez si le wallet est celui de l'admin
-        const isAdminWallet = adminsList.includes(accounts[0]);
-        setIsAdmin(isAdminWallet);
+          // Vérifiez si le wallet est celui de l'admin
+          const isAdminWallet = adminsList.includes(accounts[0]);
+          setIsAdmin(isAdminWallet);
         }
       } catch (error) {
         console.error("Erreur lors de la connexion au portefeuille : ", error);

@@ -1,16 +1,16 @@
 // Voter.jsx
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { WalletContext } from '../WalletProvider';  // Update the path based on your folder structure
-
-const candidates = [
-  { id: 1, name: 'Candidat 1', image: '/homme.webp' },
-  { id: 2, name: 'Candidat 2', image: '/femme.webp' },
-  // Add more candidates as needed
-];
+import { WalletContext } from '../WalletProvider'; 
+import { AppContext } from '../AppContext';
+import Web3 from 'web3';
 
 const Voter = () => {
-  const { walletConnected } = useContext(WalletContext);
+  const { walletConnected} = useContext(WalletContext);
+  const {candidatsList} = useContext(AppContext);
+  console.log(candidatsList);
+
+  const web3 = new Web3(window.ethereum);
 
   const voteContainerStyle = {
     display: 'flex',
@@ -36,13 +36,13 @@ const Voter = () => {
   return (
     <div style={voteContainerStyle}>
       <h2>Voter pour un candidat</h2>
-      {candidates.map(candidate => (
-        <div key={candidate.id} style={candidateStyle}>
-          <img src={candidate.image} alt={candidate.name} style={imageStyle} />
-          <p>{candidate.name}</p>
+      {candidatsList.map(candidat => (
+        <div key={candidat.name} style={candidateStyle}>
+          <img src={candidat.photo} alt={candidat.name} style={imageStyle} />
+          <p>{candidat.name}</p>
           {/* Render the button only if the user is connected */}
           {walletConnected ? (
-            <Link to={`/components/candidats/Candidat${candidate.id}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/components/candidats/Candidat${candidat.name}`} style={{ textDecoration: 'none' }}>
               <button>Voter maintenant</button>
             </Link>
           ) : (

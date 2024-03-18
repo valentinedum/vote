@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom'; // Importez BrowserRouter
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AppProvider } from './AppContext'; // Importez le AppProvider depuis le fichier approprié
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -9,7 +10,9 @@ const root = createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
-      <App />
+      <AppProvider> {/* Enveloppez votre App avec le AppProvider */}
+        <App />
+      </AppProvider>
     </Router>
   </React.StrictMode>
 );

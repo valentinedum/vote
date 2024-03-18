@@ -1,10 +1,11 @@
 {
-  "name": "tp1",
+  "name": "voting-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@metamask/sdk-react": "^0.12.2",
     "@nextui-org/react": "^2.2.9",
+    "@openzeppelin/contracts": "^5.0.2",
     "@taquito/taquito": "^17.3.2",
     "@temple-wallet/dapp": "^8.0.0",
     "@testing-library/jest-dom": "^5.17.0",
@@ -15,7 +16,7 @@
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0",
+    "react-router-dom": "^6.22.3",
     "react-scripts": "^5.0.1",
     "stream": "^0.0.2",
     "tailwindcss": "^3.3.5",
@@ -45,5 +46,21 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.1"
+  },
+  "description": "Node js :https://nodejs.org/en/download React https://react.dev/learn/installation nextui ,taquito : se placer dans ce dossier en pwd puis lancer la commande npm install nextui, npm install @taquito/taquito",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "voting",
+    "blockchain",
+    "app"
+  ],
+  "author": "Valentine",
+  "license": "ISC"
 }

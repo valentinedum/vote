@@ -1,10 +1,13 @@
-// Candidats.js
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import Candidat1 from './candidats/Candidat1';
-import Candidat2 from './candidats/Candidat2';
+import { AppContext } from '../AppContext';
+import Candidat1 from './candidats/Candidat1'; // Importez le composant Candidat1
+import Candidat2 from './candidats/Candidat2'; // Importez le composant Candidat2
+import CandidatDetails from './candidats/CandidatDetails';
 
 const Candidats = () => {
+  const { candidatsList } = useContext(AppContext); // Accédez à la liste des candidats depuis le contexte global
+
   const candidatContainerStyle = {
     display: 'flex',
     justifyContent: 'center',
@@ -40,27 +43,18 @@ const Candidats = () => {
 
   return (
     <div>
-      <Routes>
-        <Route path="/components/candidats/Candidat1" element={<Candidat1 />} />
-        <Route path="/components/candidats/Candidat2" element={<Candidat2 />} />
-      </Routes>
       <div style={candidatContainerStyle}>
         <div>
-          {/* Utilisez les liens pour rendre les images cliquables */}
-          <Link to="/components/candidats/Candidat1" style={{ textDecoration: 'none', color: 'black' }}>
-            <div style={candidatStyle}>
-              <img src="/homme.webp" alt="Candidat1" style={imageStyle} />
-              <p style={nameStyle}>Candidat 1</p>
-              <p style={{ textAlign: 'center' }}>Cliquez pour en savoir plus</p>
-            </div>
-          </Link>
-          <Link to="/components/candidats/Candidat2" style={{ textDecoration: 'none', color: 'black' }}>
-            <div style={candidatStyle}>
-              <img src="/femme.webp" alt="Candidat2" style={imageStyle} />
-              <p style={nameStyle}>Candidat 2</p>
-              <p style={{ textAlign: 'center' }}>Cliquez pour en savoir plus</p>
-            </div>
-          </Link>
+          {/* Affichez les candidats statiques et dynamiques */}
+          {candidatsList.map((candidat, index) => (
+            <Link key={index} to={`/components/candidats/${candidat.name}`} style={{ textDecoration: 'none', color: 'black' }}>
+              <div style={candidatStyle}>
+                <img src={candidat.photo} alt={candidat.name} style={imageStyle} />
+                <p style={nameStyle}>{candidat.name}</p>
+                <p style={{ textAlign: 'center' }}>Cliquez pour en savoir plus</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

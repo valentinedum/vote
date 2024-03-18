@@ -1,72 +1,127 @@
-import React, { useState } from 'react';
-
-const adminsList = ["0xd3b1bB7F7958292B22001a642007c43322b62118", '0xAdminWallet2'];
+import React, { useState, useContext } from 'react';
+import { AppContext } from '../AppContext';
 
 const Admin = () => {
-    const [votantsList, setVotantsList] = useState(["0xd3b1bB7F7958292B22001a642007c43322b62118", 'votant2', 'votant3']);
-    const [newVotantKey, setNewVotantKey] = useState('');
-    const [votantToRemove, setVotantToRemove] = useState('');
+    const { adminsList, setAdminsList, votantsList, setVotantsList, candidatsList, setCandidatsList } = useContext(AppContext);
 
-    const addVotant = () => {
-        if (newVotantKey.trim() !== '') {
-            setVotantsList(prevList => [...prevList, newVotantKey.trim()]);
-            setNewVotantKey('');
+    const [newCandidate, setNewCandidate] = useState({
+        name: '',
+        photo: '',
+        bio: ''
+    });
+
+    const [newVotant, setNewVotant] = useState('');
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewCandidate(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleAddCandidat = () => {
+        if (newCandidate.name.trim() !== '' && newCandidate.photo.trim() !== '' && newCandidate.bio.trim() !== '') {
+            // Ajoutez le nouveau candidat à la liste
+            setCandidatsList(prevList => [...prevList, newCandidate]);
+            // Réinitialisez le formulaire
+            setNewCandidate({ name: '', photo: '', bio: '' });
         }
     };
 
-    const removeVotant = () => {
-        if (votantToRemove.trim() !== '') {
-            setVotantsList(prevList => prevList.filter(votant => votant !== votantToRemove.trim()));
-            setVotantToRemove('');
+    const handleAddVotant = () => {
+        if (newVotant.trim() !== '') {
+            // Ajoutez le nouveau votant à la liste
+            setVotantsList(prevList => [...prevList, newVotant]);
+            // Réinitialisez le formulaire
+            setNewVotant('');
         }
+    };
+
+    const handleRemoveVotant = (index) => {
+        // Supprimez le votant de la liste en utilisant son index
+        setVotantsList(prevList => {
+            const newList = [...prevList];
+            newList.splice(index, 1);
+            return newList;
+        });
     };
 
     return (
-        <div style={{ margin: '20px 0', fontFamily: 'Arial, sans-serif' }}>
-            <div style={{ marginBottom: '20px' }}>
-                <h2>Liste des Admins</h2>
-                <ul>
-                    {adminsList.map((admin, index) => (
-                        <li key={index}>{admin}</li>
-                    ))}
-                </ul>
-            </div>
+        <div>
+            {/* Liste des admins */}
+            <h3>Liste des admins:</h3>
+            <ul>
+                {adminsList.map((admin, index) => (
+                    <li key={index}>{admin}</li>
+                ))}
+            </ul>
 
-            <div style={{ marginBottom: '20px' }}>
-                <h2>Liste des Votants</h2>
-                <ul>
-                    {votantsList.map((votant, index) => (
-                        <li key={index}>{votant}</li>
-                    ))}
-                </ul>
-            </div>
+            {/* Liste des votants */}
+            <h3>Liste des votants:</h3>
+            <ul>
+                {votantsList.map((votant, index) => (
+                    <li key={index}>
+                        {votant}
+                        <button onClick={() => handleRemoveVotant(index)} style={{marginLeft: '10px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}>
+                            Supprimer
+                        </button>
+                    </li>
+                ))}
+            </ul>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '20px' }}>
+            {/* Ajouter un votant */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '20px'}}>
                 <input
                     type="text"
                     placeholder="Nouveau votant"
-                    value={newVotantKey}
-                    onChange={(e) => setNewVotantKey(e.target.value)}
+                    value={newVotant}
+                    onChange={(e) => setNewVotant(e.target.value)}
                     style={{ marginRight: '10px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
                 />
-                <button onClick={addVotant} style={{ padding: '8px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                <button onClick={handleAddVotant} style={{ padding: '8px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                     Ajouter un votant
                 </button>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                <select
-                    value={votantToRemove}
-                    onChange={(e) => setVotantToRemove(e.target.value)}
+            {/* Liste des candidats */}
+            <h3>Liste des candidats:</h3>
+            <ul>
+                {candidatsList.map((candidat, index) => (
+                    <li key={index}>
+                        {candidat.name}
+                    </li>
+                ))}
+            </ul>
+
+            {/* Ajouter un candidat */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '20px'}}>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Nom du candidat"
+                    value={newCandidate.name}
+                    onChange={handleInputChange}
                     style={{ marginRight: '10px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
-                >
-                    <option value="">Sélectionner le votant à supprimer</option>
-                    {votantsList.map((votant, index) => (
-                        <option key={index} value={votant}>{votant}</option>
-                    ))}
-                </select>
-                <button onClick={removeVotant} style={{ padding: '8px', backgroundColor: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                    Supprimer le votant sélectionné
+                />
+                <input
+                    type="text"
+                    name="photo"
+                    placeholder="URL de la photo"
+                    value={newCandidate.photo}
+                    onChange={handleInputChange}
+                    style={{ marginRight: '10px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+                />
+                <input
+                    type="text"
+                    name="bio"
+                    placeholder="Biographie"
+                    value={newCandidate.bio}
+                    onChange={handleInputChange}
+                    style={{ marginRight: '10px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+                />
+                <button onClick={handleAddCandidat} style={{ padding: '8px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                    Ajouter un candidat
                 </button>
             </div>
         </div>
@@ -74,4 +129,3 @@ const Admin = () => {
 };
 
 export default Admin;
-export { adminsList };
