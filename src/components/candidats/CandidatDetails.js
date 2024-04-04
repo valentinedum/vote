@@ -28,4 +28,5 @@ const CandidatDetails = () => {
   );
 };
 
+
 export default CandidatDetails;

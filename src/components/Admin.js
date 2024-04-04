@@ -1,8 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AppContext } from '../AppContext';
+import Web3 from 'web3';
+import { toggleVotingPeriod, distributeTokens, addCandidate } from '../ContractInteraction';
+import AdminDashboard from './AdminDashboard';
 
 const Admin = () => {
-    const { adminsList, setAdminsList, votantsList, setVotantsList, candidatsList, setCandidatsList } = useContext(AppContext);
+    
+    const { adminsList, setAdminsList, votantsList, setVotantsList, candidatsList, setCandidatsList, votingPeriodActive, setVotingPeriodActive } = useContext(AppContext);
+    const [buttonText, setButtonText] = useState(votingPeriodActive ? "Arrêter la période de vote" : "Commencer la période de vote");
 
     const [newCandidate, setNewCandidate] = useState({
         name: '',
@@ -20,12 +25,20 @@ const Admin = () => {
         }));
     };
 
-    const handleAddCandidat = () => {
+    const handleAddCandidat = async () => {
         if (newCandidate.name.trim() !== '' && newCandidate.photo.trim() !== '' && newCandidate.bio.trim() !== '') {
-            // Ajoutez le nouveau candidat à la liste
-            setCandidatsList(prevList => [...prevList, newCandidate]);
-            // Réinitialisez le formulaire
-            setNewCandidate({ name: '', photo: '', bio: '' });
+            try {
+                // Ajout du candidat en utilisant la fonction addCandidate du contrat intelligent
+                await addCandidate(newCandidate.name);
+                
+                // Ajoutez le nouveau candidat à la liste localement
+                setCandidatsList(prevList => [...prevList, newCandidate]);
+
+                // Réinitialisez le formulaire
+                setNewCandidate({ name: '', photo: '', bio: '' });
+            } catch (error) {
+                console.error('Error adding candidate:', error);
+            }
         }
     };
 
@@ -35,6 +48,7 @@ const Admin = () => {
             setVotantsList(prevList => [...prevList, newVotant]);
             // Réinitialisez le formulaire
             setNewVotant('');
+
         }
     };
 
@@ -46,6 +60,26 @@ const Admin = () => {
             return newList;
         });
     };
+
+
+    const handleToggleVotingPeriod = async () => {
+        try {
+          const newVotingPeriodActive = !votingPeriodActive; // Stocker le nouvel état de la période de vote dans une variable temporaire
+          await toggleVotingPeriod(newVotingPeriodActive); // Inverser l'état actuel de la période de vote
+          console.log(`Voting period toggled successfully`);
+          setButtonText(newVotingPeriodActive ? "Arrêter la période de vote" : "Commencer la période de vote"); // Mettre à jour le texte du bouton en fonction de la variable temporaire
+          setVotingPeriodActive(newVotingPeriodActive); // Mettre à jour l'état de la période de vote dans le composant avec la variable temporaire
+          if (!votingPeriodActive) {
+            // Si la période de vote vient d'être activée, distribuer les tokens aux votants
+            await distributeTokens(); // Appeler la fonction distributeTokens pour distribuer les tokens aux votants
+            console.log('Tokens distributed successfully');
+          }
+        } catch (error) {
+          console.error('Error toggling voting period:', error);
+        }
+    };
+    
+    
 
     return (
         <div>
@@ -124,6 +158,17 @@ const Admin = () => {
                     Ajouter un candidat
                 </button>
             </div>
+
+            {/* Admin Dashboard */}
+            <AdminDashboard />
+
+            {/* Bouton pour commencer/arrêter la période de vote */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                <button onClick={handleToggleVotingPeriod} style={{ padding: '8px', backgroundColor: votingPeriodActive ? 'red' : 'green', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                    {buttonText}
+                </button>
+            </div>
+
         </div>
     );
 };

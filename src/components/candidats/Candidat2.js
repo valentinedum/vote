@@ -1,8 +1,13 @@
 // Candidat2.jsx
 import React from 'react';
 import '../candidatStyles.css';
+import { addCandidate } from '../../ContractInteraction';
+import { useEffect } from 'react';
 
 const Candidat2 = () => {
+  useEffect(() => {
+    addCandidate('Candidat 2');
+  }, [])
   return (
     <div className="candidat-container">
       <img src="/femme.webp" alt="Candidat 2" className="candidat-image" />
@@ -13,5 +18,7 @@ const Candidat2 = () => {
     </div>
   );
 };
+
+addCandidate(Candidat2.name);
 
 export default Candidat2;
